@@ -1,33 +1,38 @@
 "use strict";
-
 var express = require("express");
-var jsonParser = require("body-parser").json;
+var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-var dbConfig = require("./config/database");
 var logger = require("morgan");
 var app = express();
-
 app.use(logger("dev"));
-app.use(jsonParser());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 //database connection 
 //console.log(dbConfig.url);
-mongoose.connect("mongodb://localhost:27017/users");
+
+var dbConfig = require("./config/database");
+mongoose.connect(dbConfig.url);
+app.set('superSecret', dbConfig.secret )
 var db = mongoose.connection;
 db.on('error', function(err) {
     console.log(err);
-    //
+    process.exit();
 });
 
 db.once('open', function() {
+    //console.log(1);
     console.log("Successfully connected to the database");
-    db.close();
+    //db.close();
 })
 // define a simple route
 app.get('/', function(req, res){
     console.log(req.body);
+    //console.log(3);
     res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
 });
+
+require("./app/routes/routes")(app)
 
 // listen for requests
 app.listen(3000, function(){
