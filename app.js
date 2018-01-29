@@ -16,7 +16,7 @@ mongoose.connect(dbConfig.url);
 app.set('superSecret', dbConfig.secret )
 var db = mongoose.connection;
 db.on('error', function(err) {
-    console.log(err);
+    //console.log(err);
     process.exit();
 });
 
@@ -27,7 +27,7 @@ db.once('open', function() {
 })
 // define a simple route
 app.get('/', function(req, res){
-    console.log(req.body);
+    //console.log(req.body);
     //console.log(3);
     res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
 });
@@ -38,3 +38,5 @@ require("./app/routes/routes")(app)
 app.listen(3000, function(){
     console.log("Server is listening on port 3000");
 })
+
+module.exports = app
